@@ -5,8 +5,10 @@
             <div class="panel panel-success">
                 <div class="panel-heading"><h5>Quick Stats</h5></div>
                 <div class="panel-body">
-                    <p>Total Entries: {{totalItems}}</p>
-                    <p>Total Tweets: {{totalTweetedItems}}</p>
+                    <div class="col-md-12">
+                        <p>Total Entries: {{totalItems}}</p>
+                        <p>Total Tweets: {{totalTweetedItems}}</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -14,14 +16,18 @@
             <div class="panel panel-default">
                 <div class="panel-body">
                     <div class="col-md-4">
-                        {{> setAPIEndpointOption }}
+                        <div class="form-group">
+                            <label class="option"><i id="set-endpoint" class="fa fa-square-o"></i> Set API Endpoint</label>
+                        </div>
                         {{#if setEndpoint }}
                             <div class="form-group">
                                 <input type="text" id="endpoint" class="form-control" />
                                 <span class="help-block small">Set the CGSpace API endpoint.</span>
                             </div>
                         {{/if}}
-                        {{> skipSpecifyOption }}
+                        <div class="form-group">
+                            <label class="option"><i id="skip-items" class="fa fa-square-o"></i>  Specify Items to skip</label>
+                        </div>
                         {{#if skipItems}}
                             <div class="form-group">
                                 <input type="number" id="items-to-skip" class="form-control" min="0" max="49950" value="0"/>
@@ -39,7 +45,9 @@
                         </div>
                     </div>
                     <div class="col-md-4">
-                        {{> showItemsWithDOIOnlyOption }}
+                        <div class="form-group">
+                            <label class="option"><i id="doi-items" class="fa fa-square-o"></i> Show Items with DOI only</label>
+                        </div>
                         <div class="form-group">
                             <input id="search-hashtags-and-mentions" class="form-control"/>
                             <span class="help-block small">Filter by hashtags or mentions, e.g. <em>#ILRI, @CTAflash</em> <i id="hashtags-and-mentions-button" class="fa fa-info-circle" data-toggle="modal" data-target="#hashtags-and-mentions-modal"></i></span>
@@ -58,9 +66,9 @@
                             {{/if}}
                         </div>
                     </div>
-                    <div class="col-md-4 text-right">
+                    <div class="col-md-4 pull-right">
                         <p>Selected Entries: {{ selectedItemsCount }}</p>
-                        <button id="tweet-items" class="btn btn-success btn-large" href="#"><i class="fa fa-twitter"></i> Tweet</button>
+                        <button id="tweet-items" class="btn btn-success btn-large" href="#"><i class="fa fa-twitter"></i> Tweets</button>
                     </div>
                 </div>
             </div>
@@ -83,14 +91,10 @@
                     <table class="table table-striped">
                         <thead>
                         <tr>
-                            <th class="col-md-1 col-sm-1">
-                                <div class="checkbox checkbox-primary">
-                                    <label for="all-items">
-                                        <input type="checkbox" name="selectAll" id="all-items"/> All
-                                    </label>
-                                </div>
+                            <th class="col-md-1 col-sm-1 col-xs-2">
+                                <i id="all-items" class="fa fa-square-o" data-item-title="{{title}}" data-item-handle="{{handle}}" data-item-hashtags="{{hashtags}}" data-item-mentions="{{mentions}}"></i> All
                             </th>
-                            <th class="col-md-4 col-sm-4 sortable hidden-xs" data-sort-field="title" data-sort-field-type="text" >Title</th>
+                            <th class="col-md-4 col-sm-4 col-xs-10 sortable hidden-xs" data-sort-field="title" data-sort-field-type="text" >Title</th>
                             <th class="col-md-3 col-sm-3 sortable hidden-xs" data-sort-field="handle" data-sort-field-type="text">Handle</th>
                             <th class="col-md-2 col-sm-2 sortable active hidden-xs hidden-sm" data-sort-field="dateIssued" data-sort-field-type="date">Date Issued
                                 <div id="sorter" class="pull-right">
@@ -145,11 +149,7 @@
 </template>
 
 <template name="itemSelect">
-    <div class="checkbox checkbox-primary">
-        <label for="{{_id}}">
-            <input id="{{_id}}" type="checkbox" name="selectItem" class="item-selected" value="{{_id}}" data-item-title="{{title}}" data-item-handle="{{handle}}" data-item-hashtags="{{hashtags}}" data-item-mentions="{{mentions}}"/>
-        </label>
-    </div>
+    <i id="{{_id}}" class="fa fa-square-o item-selected" data-item-title="{{title}}" data-item-handle="{{handle}}" data-item-hashtags="{{hashtags}}" data-item-mentions="{{mentions}}"></i>
     {{#if alreadyTweeted}}
         <i class="fa fa-info-circle" data-toggle="modal" data-target="#tweetInfoModal"></i>
     {{/if}}
@@ -172,36 +172,6 @@
     </div>
     <div>
         <span class="help-block small">Search items (<em>{{selectedSearchField}}</em>).</span>
-    </div>
-</template>
-
-<template name="skipSpecifyOption">
-    <div class="form-group">
-        <div class="checkbox checkbox-primary">
-            <label for="skip-items">
-                <input type="checkbox" name="selectAll" id="skip-items"/> Specify Items to skip
-            </label>
-        </div>
-    </div>
-</template>
-
-<template name="setAPIEndpointOption">
-    <div class="form-group">
-        <div class="checkbox checkbox-primary">
-            <label for="set-endpoint">
-                <input type="checkbox" name="selectAll" id="set-endpoint"/> Set API Endpoint
-            </label>
-        </div>
-    </div>
-</template>
-
-<template name="showItemsWithDOIOnlyOption">
-    <div class="form-group">
-        <div class="checkbox checkbox-primary">
-            <label for="doi-items">
-                <input type="checkbox" name="doiItems" id="doi-items"/> Show Items with DOI only
-            </label>
-        </div>
     </div>
 </template>
 

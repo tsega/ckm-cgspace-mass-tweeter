@@ -9,56 +9,88 @@ div.disabled{
     border-color: #888;
   }
 }
-table{
-  th {
-    i.fa {
-      font-size: 20px;
-      &:hover, &.active {
-        color: #4caf50;
-      }
-      &.fa-chevron-circle-up{
-        margin-right: 5px;
-      }
-    }
-  }
-  tr.info{
-    color: #888 !important;
-    a{
-      color: #888 !important;
-    }
-  }
-  tr{
-    td {
-      a {
-        color: #4caf50;
+
+div.panel{
+  div.panel-body{
+    overflow: scroll;
+    div.form-group{
+      label.option{
+        font-weight: 400;
+        line-height: 2.5em;
+        i{
+          display: inline-block;
+          margin-right: 5px;
+          font-size: 2em;
+        }
       }
     }
-    &.tweeted {
-      background-color: #28A9E0 !important;
-      color: #fff;
-      td{
-        a {
-          color: #444;
-          &:hover {
-            color: #000;
+    table{
+      th {
+        border-bottom: none;
+        i.fa-chevron-circle-up, i.fa-chevron-circle-down {
+          font-size: 20px;
+          &:hover, &.active {
+            color: #4caf50;
+          }
+          &.fa-chevron-circle-up{
+            margin-right: 5px;
           }
         }
-        i.fa{
-          font-size: 1.5em;
-          cursor: pointer;
+        i{
+          &.fa-square-o, &.fa-check-square-o {
+            font-size: 1.5em;
+            display: inline-block;
+            cursor: pointer;
+          }
         }
-        .checkbox-primary input[type=checkbox]:checked + .checkbox-material .check,
-        .checkbox-primary input[type=checkbox]:checked + .checkbox-material .check:before{
-          color: #fff !important;
+      }
+      tr.info{
+        color: #888 !important;
+        a{
+          color: #888 !important;
+        }
+      }
+      tr{
+        td {
+          a {
+            color: #4caf50;
+          }
+          i{
+            &.fa-square-o, &.fa-check-square-o {
+              font-size: 1.5em;
+              margin-bottom: 20px;
+              display: block;
+              cursor: pointer;
+            }
+          }
+        }
+        &.tweeted {
+          background-color: #28A9E0 !important;
+          color: #fff;
+          td{
+            a {
+              color: #444;
+              &:hover {
+                color: #000;
+              }
+            }
+            i.fa-info-circle{
+              font-size: 1.5em;
+              cursor: pointer;
+            }
+          }
         }
       }
     }
   }
 }
-.checkbox-primary input[type=checkbox]:checked + .checkbox-material .check,
-.checkbox-primary input[type=checkbox]:checked + .checkbox-material .check:before{
-  color: #4caf50;
+
+@media screen and (max-width: 400px){
+  div.panel-body{
+    padding: 20px 0;
+  }
 }
+
 section#main-content{
   div.at-form{
     width: 50%;
@@ -70,6 +102,7 @@ section#main-content{
     }
   }
 }
+
 @media screen and (max-width: 992px) {
   section#main-content{
     div.at-form{
@@ -77,6 +110,7 @@ section#main-content{
     }
   }
 }
+
 .pagination{
   border-radius: 0px;
   margin-bottom: 0px;
@@ -109,16 +143,9 @@ section#main-content{
     }
   }
 }
+
 div.tweets-list{
   margin-top: 20px;
-}
-
-div.-autocomplete-container{
-  ul.-autocomplete-list{
-    li.-autocomplete-item:hover, li.-autocomplete-item.selected {
-      background-color: #4caf50 !important;
-    }
-  }
 }
 
 tr {
@@ -150,27 +177,6 @@ tr {
   }
 }
 
-
-.checkbox-primary input[type=checkbox]:checked + .checkbox-material .check, .checkbox-primary input[type=checkbox]:checked + .checkbox-material .check:before {
-  color: #4caf50;
-}
-.checkbox-primary input[type=checkbox]:checked + .checkbox-material .check {
-  color: #009688;
-}
-.checkbox input[type=checkbox]:checked + .checkbox-material .check, .checkbox-default input[type=checkbox]:checked + .checkbox-material .check {
-  color: #4caf50;
-}
-.checkbox .checkbox-material .check {
-  position: relative;
-  display: inline-block;
-  width: 20px;
-  height: 20px;
-  border: 2px solid;
-  border-radius: 2px;
-  overflow: hidden;
-  z-index: 1;
-}
-
 #hashtags-and-mentions-button{
   font-size: 1.5em;
   color: #03a9f4;
@@ -199,10 +205,6 @@ tr.with-doi {
     color: #fff;
     a {
       color: #000 !important;
-    }
-    .checkbox-primary input[type=checkbox]:checked + .checkbox-material .check,
-    .checkbox-primary input[type=checkbox]:checked + .checkbox-material .check:before{
-      color: #fff !important;
     }
   }
 }

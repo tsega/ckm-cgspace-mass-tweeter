@@ -6,6 +6,16 @@ specifySkipItems = new ReactiveVar(false);
 setAPIEndpoint = new ReactiveVar(false);
 tweetInfo = new ReactiveVar();
 
+$.fn.checkItem = function(check) {
+    return this.each(function() {
+        if(check){
+            $(this).removeClass("fa-square-o").addClass('fa-check-square-o');
+        } else {
+            $(this).removeClass("fa-check-square-o").addClass('fa-square-o');
+        }
+    });
+};
+
 fetchEvent.addListener('progress', function(userId, newAdditions, percentage) {
     if(Meteor.userId() == userId){
         $("#items-imported").text(newAdditions);
@@ -116,26 +126,64 @@ Template.home.helpers({
 });
 
 Template.home.events({
-    "change #all-items": function (e, t){
-        if (e.target.checked) {
-            t.$("table tbody tr>td input").prop("checked", true);
-            Session.set("isNotificationSelected", true);
+    "click #skip-items": function(e, t){
+        if (t.$(e.target).hasClass("fa-square-o")) {
+            t.$(e.target).checkItem(true);
+            specifySkipItems.set(true);
         } else {
-            t.$("table tbody tr>td input").prop("checked", false);
-            Session.set("isNotificationSelected", false);
+            t.$(e.target).checkItem(false);
+            specifySkipItems.set(false);
         }
-        t.$("table tbody tr>td input").trigger("change");
     },
-    "change input.item-selected": function(e, t){
-        if (e.target.checked) {
-            selectedItemsCount.set(selectedItemsCount.get() + 1);
-            if(t.$("table tbody tr>td input:checked").length == t.$("table tbody tr>td input").length){
-                t.$("input#all-items").prop("checked", true);
+    "click #doi-items": function(e, t){
+        var searchDOIFilter = getCopy(searchFilter.get());
+
+        if(t.$(e.target).hasClass("fa-square-o")){
+            t.$(e.target).checkItem(true);
+
+            searchDOIFilter.doi = {$exists: 1};
+            searchFilter.set(searchDOIFilter);
+            Items.set({
+                filters: searchFilter.get()
+            });
+        } else {
+            t.$(e.target).checkItem(false);
+
+            delete searchDOIFilter.doi;
+            searchFilter.set(searchDOIFilter);
+            Items.set({
+                filters: searchFilter.get()
+            });
+        }
+    },
+    "click #set-endpoint": function(e, t){
+        if(t.$(e.target).hasClass("fa-square-o")){
+            t.$(e.target).checkItem(true);
+            setAPIEndpoint.set(true);
+        } else {
+            t.$(e.target).checkItem(false);
+            setAPIEndpoint.set(false);
+        }
+    },
+    "click i#all-items": function (e, t){
+        if (t.$(e.target).hasClass("fa-square-o")) {
+            t.$("table i.fa-square-o").checkItem(true);
+        } else {
+            t.$("table i.fa-check-square-o").checkItem(false);
+        }
+        selectedItemsCount.set(t.$("table tbody tr>td i.fa-check-square-o").length);
+    },
+    "click i.item-selected": function(e, t){
+        if (t.$(e.target).hasClass("fa-square-o")) {
+            t.$(e.target).checkItem(true);
+            if($("table tbody tr>td i.fa-square-o").length == 0){
+                t.$("i#all-items").checkItem(true);
             }
         } else {
-            selectedItemsCount.set(selectedItemsCount.get() - 1);
-            t.$("input#all-items").prop("checked", false);
+            t.$(e.target).checkItem(false);
+            t.$("i#all-items").checkItem(false);
         }
+        selectedItemsCount.set(t.$("table tbody tr>td i.fa-check-square-o").length);
     },
     "click #fetch-items": function (e, t) {
         t.$("#fetch-items").prop('disabled', true);
@@ -272,9 +320,9 @@ Template.home.events({
         }
     },
     "click #tweet-items": function (e, t) {
-        var selectedItems = _.map(t.findAll("table tr td input:checked"), function (checkbox) {
+        var selectedItems = _.map(t.findAll("table tr td i.fa-checkbox-square-o"), function (checkbox) {
             var selectedItem = {
-                _id: checkbox.value,
+                _id: checkbox.id,
                 title: checkbox.dataset.itemTitle,
                 handle: checkbox.dataset.itemHandle
             };
@@ -297,7 +345,7 @@ Template.home.events({
                 }
             });
             // Clear selected items
-            t.$("input#all-items, table tbody tr>td input:checked").prop("checked", false);
+            t.$("i#all-items, table tbody tr td i.fa-check-square-o").removeClass("fa-check-square-o").addClass("fa-square-o");
             selectedItemsCount.set(0);
         } else {
             toastr.info("Please select items to Tweet");
@@ -345,9 +393,8 @@ Template.itemSelect.events({
 });
 
 Template.itemSelect.onRendered(function(){
-    $.material.checkbox();
-    $("input#all-items").prop("checked", false);
-    selectedItemsCount.set($("table tbody tr>td input:checked").length);
+    $("i#all-items, table tbody tr td i.fa-check-square-o").removeClass("fa-check-square-o").addClass("fa-square-o");
+    selectedItemsCount.set(0);
 });
 
 Template.dateSearchForm.events({
@@ -420,58 +467,6 @@ Template.dateSearchForm.helpers({
 
 Template.dateSearchForm.onRendered(function(){
     this.$('.datetimepicker').datetimepicker();
-});
-
-Template.skipSpecifyOption.events({
-    "change #skip-items": function(e, t){
-        if(e.target.checked){
-            specifySkipItems.set(true);
-        } else {
-            specifySkipItems.set(false);
-        }
-    }
-});
-
-Template.skipSpecifyOption.onRendered(function(){
-    $.material.checkbox();
-});
-
-Template.showItemsWithDOIOnlyOption.events({
-    "change #doi-items": function(e, t){
-        var searchDOIFilter = getCopy(searchFilter.get());
-
-        if(e.target.checked){
-            searchDOIFilter.doi = {$exists: 1};
-            searchFilter.set(searchDOIFilter);
-            Items.set({
-                filters: searchFilter.get()
-            });
-        } else {
-            delete searchDOIFilter.doi;
-            searchFilter.set(searchDOIFilter);
-            Items.set({
-                filters: searchFilter.get()
-            });
-        }
-    }
-});
-
-Template.showItemsWithDOIOnlyOption.onRendered(function(){
-    $.material.checkbox();
-});
-
-Template.setAPIEndpointOption.events({
-    "change #set-endpoint": function(e, t){
-        if(e.target.checked){
-            setAPIEndpoint.set(true);
-        } else {
-            setAPIEndpoint.set(false);
-        }
-    }
-});
-
-Template.setAPIEndpointOption.onRendered(function(){
-    $.material.checkbox();
 });
 
 Template.tweetInfoModal.helpers({
